@@ -11,7 +11,16 @@ public class Assessment implements Serializable {
     String name;
     int score;
     int outOf;
-    float weight;
+    int weight;
+    String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     //These are the constructors (note they have no return type and are the same name as the class)       
     public Assessment() {
@@ -64,11 +73,11 @@ public class Assessment implements Serializable {
         this.outOf = outOf;
     }
 
-    public float getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 

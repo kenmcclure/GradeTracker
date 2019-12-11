@@ -39,7 +39,7 @@ public class Student implements Serializable {
 
     public void removeSubject(String subjectName) {
         for (int i = 0; i < subjects.size(); i++) {
-            if (subjects.get(i).name.equals(subjectName)) {
+            if (subjects.get(i).name.equalsIgnoreCase(subjectName)) {
 
                 subjects.remove(i);
                 break;

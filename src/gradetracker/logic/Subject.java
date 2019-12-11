@@ -13,12 +13,12 @@ public class Subject implements Serializable {
 
     public ArrayList<Assessment> assessments;
 
-    public Subject(String n, String t, boolean hl, int level) {
-        name = n;
-        teacher = t;
-        HLorNot = hl;
-        currentLevel = level;
-        assessments = new ArrayList<Assessment>();
+    public Subject(String name, String teacher, boolean hl, int level) {
+        this.name = name;
+        this.teacher = teacher;
+        this.HLorNot = hl;
+        this.currentLevel = level;
+        this.assessments = new ArrayList<Assessment>();
     }
 
        public void addAssessment(Assessment a) {
