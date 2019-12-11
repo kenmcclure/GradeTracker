@@ -37,7 +37,7 @@ public class GradeTracker extends javax.swing.JFrame {
         updateListOfSubjects();
 
         //disable delete button as no subject is selected
-        btnRemoveSubject.setEnabled(false);
+        btnDeleteSubject.setEnabled(false);
 
     }
 
@@ -73,10 +73,10 @@ public class GradeTracker extends javax.swing.JFrame {
     private void initComponents() {
 
         btnAddSubject = new javax.swing.JButton();
-        btnRemoveSubject = new javax.swing.JButton();
+        btnDeleteSubject = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSubjects = new javax.swing.JTable();
-        Details = new javax.swing.JButton();
+        btnEditSubject = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -87,15 +87,15 @@ public class GradeTracker extends javax.swing.JFrame {
                 btnAddSubjectActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAddSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, -1, -1));
+        getContentPane().add(btnAddSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 80, -1));
 
-        btnRemoveSubject.setText("Remove");
-        btnRemoveSubject.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteSubject.setText("Delete");
+        btnDeleteSubject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveSubjectActionPerformed(evt);
+                btnDeleteSubjectActionPerformed(evt);
             }
         });
-        getContentPane().add(btnRemoveSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 230, 79, -1));
+        getContentPane().add(btnDeleteSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 130, 79, -1));
 
         tblSubjects.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,13 +131,13 @@ public class GradeTracker extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 470, 180));
 
-        Details.setText("Open...");
-        Details.addActionListener(new java.awt.event.ActionListener() {
+        btnEditSubject.setText("Edit");
+        btnEditSubject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DetailsActionPerformed(evt);
+                btnEditSubjectActionPerformed(evt);
             }
         });
-        getContentPane().add(Details, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 230, 80, -1));
+        getContentPane().add(btnEditSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 100, 80, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -154,7 +154,7 @@ public class GradeTracker extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnAddSubjectActionPerformed
 
-    private void btnRemoveSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSubjectActionPerformed
+    private void btnDeleteSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSubjectActionPerformed
 
         //Remove the selected row (if one is selected)  
         // Note: I have named my table "tblSubjects"
@@ -176,7 +176,7 @@ public class GradeTracker extends javax.swing.JFrame {
         }
         //
 
-    }//GEN-LAST:event_btnRemoveSubjectActionPerformed
+    }//GEN-LAST:event_btnDeleteSubjectActionPerformed
 
     private void tblSubjectsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSubjectsMouseClicked
         // TODO add your handling code here:
@@ -189,12 +189,12 @@ public class GradeTracker extends javax.swing.JFrame {
             this.updateListOfSubjects();
         } else {
             //just a normal selection - make sure delete button is enabled
-            btnRemoveSubject.setEnabled(true);
+            btnDeleteSubject.setEnabled(true);
         }
 
     }//GEN-LAST:event_tblSubjectsMouseClicked
 
-    private void DetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetailsActionPerformed
+    private void btnEditSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSubjectActionPerformed
         // TODO add your handling code here:
         //SubjectForm sf = new SubjectForm();
         //sf.setVisible(true);
@@ -203,7 +203,7 @@ public class GradeTracker extends javax.swing.JFrame {
         DlgSubject es = new DlgSubject(this,true,selectedSubject);
         es.setVisible(true);
         this.updateListOfSubjects();
-    }//GEN-LAST:event_DetailsActionPerformed
+    }//GEN-LAST:event_btnEditSubjectActionPerformed
 
     /**
      * @param args the command line arguments
@@ -241,9 +241,9 @@ public class GradeTracker extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Details;
     private javax.swing.JButton btnAddSubject;
-    private javax.swing.JButton btnRemoveSubject;
+    private javax.swing.JButton btnDeleteSubject;
+    private javax.swing.JButton btnEditSubject;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblSubjects;
     // End of variables declaration//GEN-END:variables

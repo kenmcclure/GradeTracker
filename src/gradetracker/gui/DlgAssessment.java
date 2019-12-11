@@ -7,7 +7,12 @@ package gradetracker.gui;
 
 import gradetracker.logic.Assessment;
 import gradetracker.logic.Subject;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -19,13 +24,15 @@ import javax.swing.JOptionPane;
 public class DlgAssessment extends javax.swing.JDialog {
 
     Assessment assessment;
+    Subject subject;
 
     /**
      * Creates new form DlgAssessment
      */
-    public DlgAssessment(java.awt.Frame parent, boolean modal, Assessment selectedAssessment) {
+    public DlgAssessment(java.awt.Frame parent, boolean modal, Subject subject, Assessment selectedAssessment) {
         super(parent, modal);
         this.assessment = selectedAssessment;
+        this.subject = subject;
 
         initComponents();
         this.setLocationRelativeTo(null);
@@ -33,24 +40,24 @@ public class DlgAssessment extends javax.swing.JDialog {
 
         if (selectedAssessment != null) {
             //then we are editing
-            /*
-    Date date;
-    String reflection;
-    String name;
-    int score;
-    int outOf;
-    float weight;
-             */
+            
+            this.lblMode.setText("Editing");
             this.txtTopic.setText(assessment.getName());
             this.txtReflection.setText(assessment.getReflection());
             this.txtOutOf.setText("" + assessment.getOutOf());
             this.txtScore.setText("" + assessment.getScore());
-            this.txtDate.setText(assessment.getDate().toString());
+            this.txtWeight.setText("" + assessment.getWeight());
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
+            if (assessment.getDate()!=null){
+            this.txtDate.setText(dateFormat.format(assessment.getDate()));
+            }
             //this.cmbType.setSelectedValue(assessment.getType());
             setAssessmentTypeByValue(assessment.getType());
+            cmbLevel.setSelectedIndex(assessment.getLevel()-1);
 
         } else {
             //Inserting new Assessment
+            lblMode.setText("Adding");
         }
     }
 
@@ -58,7 +65,7 @@ public class DlgAssessment extends javax.swing.JDialog {
         ComboBoxModel model = this.cmbType.getModel();
         for (int i = 0; i < model.getSize(); i++) {
             if (model.getElementAt(i).equals(type)) {
-                model.setSelectedItem(i);
+                cmbType.setSelectedIndex(i);
                 break;
             } else {
                 System.out.println("Didn't find " + type + " in the combo box");
@@ -80,13 +87,14 @@ public class DlgAssessment extends javax.swing.JDialog {
         lblDate = new javax.swing.JLabel();
         lblScore = new javax.swing.JLabel();
         lblOutOf = new javax.swing.JLabel();
+        lblMode = new javax.swing.JLabel();
         txtTopic = new javax.swing.JTextField();
         txtDate = new javax.swing.JTextField();
         txtScore = new javax.swing.JTextField();
         txtOutOf = new javax.swing.JTextField();
         cmbType = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         lblAssessmentsTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtReflection = new javax.swing.JTextArea();
@@ -94,6 +102,9 @@ public class DlgAssessment extends javax.swing.JDialog {
         lblWeight = new javax.swing.JLabel();
         txtWeight = new javax.swing.JTextField();
         lblWeightHint = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        lblLevel = new javax.swing.JLabel();
+        cmbLevel = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -102,39 +113,42 @@ public class DlgAssessment extends javax.swing.JDialog {
         getContentPane().add(lblTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
 
         lblType.setText("Type:");
-        getContentPane().add(lblType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
+        getContentPane().add(lblType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, -1));
 
         lblDate.setText("Date:");
-        getContentPane().add(lblDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, -1, -1));
+        getContentPane().add(lblDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, -1, -1));
 
         lblScore.setText("Score:");
         getContentPane().add(lblScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 200, -1, -1));
 
         lblOutOf.setText("Out of:");
         getContentPane().add(lblOutOf, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, -1, -1));
+
+        lblMode.setForeground(new java.awt.Color(255, 51, 51));
+        getContentPane().add(lblMode, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 120, 20));
         getContentPane().add(txtTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 50, 270, -1));
-        getContentPane().add(txtDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 270, -1));
+        getContentPane().add(txtDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 140, -1));
         getContentPane().add(txtScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 200, 140, -1));
         getContentPane().add(txtOutOf, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 140, -1));
 
         cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Test", "Exam", "Assignment", "Homework", "IA", "Other" }));
-        getContentPane().add(cmbType, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, -1, -1));
+        getContentPane().add(cmbType, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, -1, -1));
 
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCancelActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, -1, -1));
+        getContentPane().add(btnCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, -1, -1));
 
-        jButton2.setText("Save");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 330, -1, -1));
+        getContentPane().add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 330, -1, -1));
 
         lblAssessmentsTitle.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         lblAssessmentsTitle.setText("Assessments");
@@ -156,55 +170,73 @@ public class DlgAssessment extends javax.swing.JDialog {
         lblWeightHint.setText("(0 to 100)");
         getContentPane().add(lblWeightHint, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 290, -1, -1));
 
+        jLabel1.setText("eg. 17/12/2019");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 140, -1, -1));
+
+        lblLevel.setText("Level:");
+        getContentPane().add(lblLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, -1, -1));
+
+        cmbLevel.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7" }));
+        getContentPane().add(cmbLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 170, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:
-        /*  if (assessment==null){
+     if (assessment==null){
             //inserting new assessment
             
             Assessment newAssessment=new Assessment();
+       
+         try {  
+             Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(txtDate.getText());
+             newAssessment.setDate(date1);
+         } catch (ParseException ex) {
+             JOptionPane.showMessageDialog(null, "Invalid date format, please correct it before saving", "Save Assessment", JOptionPane.ERROR_MESSAGE);
+             return; // drop out of save
+         }
             
-                Date date;
-    String reflection;
-    String name;
-    int score;
-    int outOf;
-    int weight;
-    String type;
-         */
- /*
-            newAssessment.setDate(Date.parse(txtDate.getText()));
             newAssessment.setReflection(txtReflection.getText());
             newAssessment.setName(txtTopic.getText());
-            newAssessment.setOutOf(txtOutOf.getText());
-            newAssessment.setWeight(txtScore.getText());
-            newAssessment.setWeight(txtWeight.getText());
+            newAssessment.setOutOf(Integer.parseInt(txtOutOf.getText()));
+            newAssessment.setScore(Integer.parseInt(txtScore.getText()));
+            newAssessment.setWeight(Integer.parseInt(txtWeight.getText()));
             newAssessment.setType(cmbType.getSelectedItem().toString());
-            
-            String teacher=txtTeacher.getText();
-            boolean hl=chkHL.isSelected();
-            int level=cmbLevel.getSelectedIndex()+1;
-            Subject toInsert=new Subject(name,teacher,hl,level);       
+            newAssessment.setLevel(cmbLevel.getSelectedIndex()+1);
+            subject.addAssessment(newAssessment);
+            System.out.println("Saving new Assessment:"+newAssessment.toString());
         } else {
-           //Editing existing subject
-            subject.name=txtSubject.getText();
-            subject.teacher=txtTeacher.getText();
-            subject.HLorNot=chkHL.isSelected();
-            subject.currentLevel=cmbLevel.getSelectedIndex()+1;    
+           //Editing existing assessment
+         try {  
+             Date assessmentDate=new SimpleDateFormat("dd/MM/yyyy").parse(txtDate.getText());
+             assessment.setDate(assessmentDate);
+         } catch (ParseException ex) {
+             JOptionPane.showMessageDialog(null, "Invalid date format, please correct it before saving", "Save Assessment", JOptionPane.ERROR_MESSAGE);
+             return; // drop out of save
+         }
+            
+            assessment.setReflection(txtReflection.getText());
+            assessment.setName(txtTopic.getText());
+            assessment.setOutOf(Integer.parseInt(txtOutOf.getText()));
+            assessment.setScore(Integer.parseInt(txtScore.getText()));
+            assessment.setWeight(Integer.parseInt(txtWeight.getText()));
+            assessment.setType(cmbType.getSelectedItem().toString());
+            assessment.setLevel(cmbLevel.getSelectedIndex()+1);
+            System.out.println("Editing new Assessment:"+assessment.toString());
+
+
         }
         Global.saveToFile();
-        JOptionPane.showMessageDialog(null, "Your changes have been saved", "Save Subject", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Your assessment has been saved", "Save Assessment", JOptionPane.INFORMATION_MESSAGE);
         this.dispose();
-         */
-    }//GEN-LAST:event_jButton2ActionPerformed
+         
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,7 +268,7 @@ public class DlgAssessment extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DlgAssessment dialog = new DlgAssessment(new javax.swing.JFrame(), true, null);
+                DlgAssessment dialog = new DlgAssessment(new javax.swing.JFrame(), true,null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -249,12 +281,16 @@ public class DlgAssessment extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbLevel;
     private javax.swing.JComboBox<String> cmbType;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAssessmentsTitle;
     private javax.swing.JLabel lblDate;
+    private javax.swing.JLabel lblLevel;
+    private javax.swing.JLabel lblMode;
     private javax.swing.JLabel lblOutOf;
     private javax.swing.JLabel lblReflexion;
     private javax.swing.JLabel lblScore;

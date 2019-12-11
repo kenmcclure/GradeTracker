@@ -9,6 +9,15 @@ public class Assessment implements Serializable {
     Date date;
     String reflection;
     String name;
+    int level;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int Level) {
+        this.level = Level;
+    }
     int score;
     int outOf;
     int weight;
@@ -82,6 +91,6 @@ public class Assessment implements Serializable {
     }
 
     public String toString() {
-        return "name: " + name + " date:" + date + " Score:" + score + " Out of:" + outOf + " Weight:" + weight + " Reflection" + (reflection != null ? "Yes" : "No");
+        return "name: " + name + " date:" + date + " Type: "+type+" Score:" + score + " Out of:" + outOf + " Weight:" + weight + " Level:"+level+" Reflection" + (reflection != null ? "Yes" : "No");
     }
 }

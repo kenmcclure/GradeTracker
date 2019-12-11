@@ -79,6 +79,12 @@ public class Student implements Serializable {
         return addSubject(newSubjectName, null, false, 0);
     }
 
+    //allow an existing Subject instance to be added
+     public Subject addSubject(Subject newSubject) {
+        subjects.add(newSubject);
+        return newSubject;
+    }   
+    
     public void printsubjects() {
 
         for (int i = 0; i < subjects.size(); i++) {
