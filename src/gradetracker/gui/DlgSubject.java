@@ -19,41 +19,47 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DlgSubject extends javax.swing.JDialog {
 
+    //This is the only state of the class (apart formt he controls which are at the bottom)
     Subject subject;
 
-    /**
-     * Creates new form EditSubject
-     */
+    //This is the constructor
     public DlgSubject(java.awt.Frame parent, boolean modal, Subject selectedSubject) {
+        //centre the window etc
         super(parent, modal);
         this.subject = selectedSubject;
         initComponents();
         setLocationRelativeTo(null);  //this will move my form to the middle
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
+        //update the data on the screen
         refreshDataOnForm();
     }
 
     private void refreshDataOnForm() {
+        //update the subject information on the form
         if (this.subject != null) {
             //then we are editing
             lblMode.setText("Editing");
-            this.txtSubject.setText(subject.name);
-            this.txtTeacher.setText(subject.teacher);
-            this.cmbLevel.setSelectedIndex(Math.max(subject.currentLevel - 1, 0));
-            this.chkHL.setSelected(subject.HLorNot);
+            this.txtSubject.setText(subject.getName());
+            this.txtTeacher.setText(subject.getTeacher());
+            this.cmbLevel.setSelectedIndex(Math.max(subject.getCurrentLevel() - 1, 0));
+            this.chkHL.setSelected(subject.getHLorNot());
 
         } else {
             //Inserting new Subject
+            //Therefore you shouldn't be able to modify assessments
+            //until you have saved the Subject and gone back in
             lblMode.setText("Adding");
-
+            btnNewAssessment.setEnabled(false);
+            btnEditAssessment.setEnabled(false);
+            btnDeleteAssessment.setEnabled(false);
         }
+        //Additionally, update the assessments data in the table
         updateAssessmentsTable();
     }
 
     private void updateAssessmentsTable() {
-
-        if (subject.assessments == null) {
+        //if there are no assessments, do nothing
+        if (subject==null || subject.getAssessments() == null) {
             return;
         }
 
@@ -67,15 +73,15 @@ public class DlgSubject extends javax.swing.JDialog {
         assessmentsTableData.setRowCount(0);
 
         //go through my subjects and add them to the table
-        for (int i = 0; i < subject.assessments.size(); i++) {
+        for (int i = 0; i < subject.getAssessments().size(); i++) {
 
             //for a table you have to add each row as an array of Objects,
             //ie each column is an object
             assessmentsTableData.addRow(new Object[]{
-                new SimpleDateFormat("dd/MM/yyyy").format(subject.assessments.get(i).getDate()),
-                subject.assessments.get(i).getName(),
-                subject.assessments.get(i).getType(),
-                subject.assessments.get(i).getLevel()});
+                new SimpleDateFormat("dd/MM/yyyy").format(subject.getAssessments().get(i).getDate()),
+                subject.getAssessments().get(i).getName(),
+                subject.getAssessments().get(i).getType(),
+                subject.getAssessments().get(i).getLevel()});
 
         }
     }
@@ -109,7 +115,7 @@ public class DlgSubject extends javax.swing.JDialog {
         lblMode = new javax.swing.JLabel();
         btnNewAssessment = new javax.swing.JButton();
         btnEditAssessment = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        btnDeleteAssessment = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -222,33 +228,33 @@ public class DlgSubject extends javax.swing.JDialog {
         });
         getContentPane().add(btnEditAssessment, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 160, 70, -1));
 
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteAssessment.setText("Delete");
+        btnDeleteAssessment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnDeleteAssessmentActionPerformed(evt);
             }
         });
-        getContentPane().add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 190, 70, -1));
+        getContentPane().add(btnDeleteAssessment, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 190, 70, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
+        ///When the user presses the save button
+        boolean inserting = false;
         if (subject == null) {
-            //inserting new subject
-            String name = txtSubject.getText();
-            String teacher = txtTeacher.getText();
-            boolean hl = chkHL.isSelected();
-            int level = cmbLevel.getSelectedIndex() + 1;
-            Subject toInsert = new Subject(name, teacher, hl, level);
-            Global.me.addSubject(toInsert);
-        } else {
-            //Editing existing subject
-            subject.name = txtSubject.getText();
-            subject.teacher = txtTeacher.getText();
-            subject.HLorNot = chkHL.isSelected();
-            subject.currentLevel = cmbLevel.getSelectedIndex() + 1;
+            inserting = true;
+            subject = new Subject();
+        }
+
+        //Editing existing subject
+        subject.setName(txtSubject.getText());
+        subject.setTeacher(txtTeacher.getText());
+        subject.setHLorNot(chkHL.isSelected());
+        subject.setCurrentLevel(cmbLevel.getSelectedIndex() + 1);
+
+        if (inserting) {
+            Global.me.addSubject(subject);
         }
         Global.saveToFile();
         JOptionPane.showMessageDialog(null, "Your changes have been saved", "Save Subject", JOptionPane.INFORMATION_MESSAGE);
@@ -260,41 +266,35 @@ public class DlgSubject extends javax.swing.JDialog {
     }//GEN-LAST:event_txtSubjectActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
+        //when a user presses cancel, close the window
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void tblAssessmentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAssessmentsMouseClicked
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-
+        // This happens when the user clicks (or double clicks) an assessment
         if (evt.getClickCount() == 2) {
             //the user double clicked
-            Assessment selectedAssessment = subject.assessments.get(tblAssessments.getSelectedRow());
+            Assessment selectedAssessment = subject.getAssessments().get(tblAssessments.getSelectedRow());
             DlgAssessment DA = new DlgAssessment((JFrame) this.getParent(), true, subject, selectedAssessment);
             DA.setVisible(true);
         } else {
             //just a normal selection - make sure delete button is enabled
-
         }
-
-
     }//GEN-LAST:event_tblAssessmentsMouseClicked
 
     private void btnNewAssessmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewAssessmentActionPerformed
-        // TODO add your handling code here:   
         //Adding new assessment
+        //Open the assessment form, anchoring it to this form's parent
         DlgAssessment DA = new DlgAssessment((JFrame) this.getParent(), true, subject, null);
         DA.setVisible(true);
         updateAssessmentsTable();
-
     }//GEN-LAST:event_btnNewAssessmentActionPerformed
 
     private void btnEditAssessmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditAssessmentActionPerformed
         // TODO add your handling code here:
         if (tblAssessments.getSelectedRow() >= 0) {
             //editing existing assessment
-            Assessment selectedAssessment = subject.assessments.get(tblAssessments.getSelectedRow());
+            Assessment selectedAssessment = subject.getAssessments().get(tblAssessments.getSelectedRow());
             DlgAssessment DA = new DlgAssessment((JFrame) this.getParent(), true, subject, selectedAssessment);
             DA.setVisible(true);
             updateAssessmentsTable();
@@ -306,13 +306,12 @@ public class DlgSubject extends javax.swing.JDialog {
     }//GEN-LAST:event_btnEditAssessmentActionPerformed
 
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnDeleteAssessmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAssessmentActionPerformed
         // TODO add your handling code here:
         if (tblAssessments.getSelectedRow() >= 0) {
             //editing existing assessment
-
-            Assessment selectedAssessment = subject.assessments.get(tblAssessments.getSelectedRow());
-            subject.assessments.remove(selectedAssessment);
+            Assessment selectedAssessment = subject.getAssessments().get(tblAssessments.getSelectedRow());
+            subject.getAssessments().remove(selectedAssessment);
             updateAssessmentsTable();
         } else {
             //Adding new one
@@ -320,7 +319,7 @@ public class DlgSubject extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Please select an assessment to delete", "Delete Assessment", JOptionPane.INFORMATION_MESSAGE);
         }
 
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    }//GEN-LAST:event_btnDeleteAssessmentActionPerformed
 
     /**
      * @param args the command line arguments
@@ -369,7 +368,7 @@ public class DlgSubject extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDeleteAssessment;
     private javax.swing.JButton btnEditAssessment;
     private javax.swing.JButton btnNewAssessment;
     private javax.swing.JButton btnSave;

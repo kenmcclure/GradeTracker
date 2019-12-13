@@ -2,17 +2,21 @@ package gradetracker.logic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Student implements Serializable {
 
-    public ArrayList<Subject> subjects;
+//This is the state of the class, ie its variales
+//note that all variables are private and get/set methods are provided
+//this is encapsulation
+    private ArrayList<Subject> subjects;
 
-
+//These are the constructors (note they have no return type and are the same name as the class)       
     public Student() {
         subjects = new ArrayList<Subject>();
     }
 
+    //What follows is all the behavior of the class (ie. action/methods/functions)
+    //mostly accessor and mutator methods
     public ArrayList<Subject> getSubjects() {
         return subjects;
     }
@@ -26,21 +30,17 @@ public class Student implements Serializable {
     }
 
     public Subject getSubject(String subjectName) {
-
         for (int i = 0; i < subjects.size(); i++) {
-            if (subjects.get(i).name.equals(subjectName)) {
+            if (subjects.get(i).getName().equals(subjectName)) {
                 return subjects.get(i);
             }
         }
-
         return null;
-
     }
 
     public void removeSubject(String subjectName) {
         for (int i = 0; i < subjects.size(); i++) {
-            if (subjects.get(i).name.equalsIgnoreCase(subjectName)) {
-
+            if (subjects.get(i).getName().equalsIgnoreCase(subjectName)) {
                 subjects.remove(i);
                 break;
             }
@@ -50,16 +50,13 @@ public class Student implements Serializable {
 
     //add a subject
     public Subject addSubject(String newSubjectName, String teacher, boolean HL, int level) {
-
         if (subjects.size() < 7) {
             Subject newSubject = new Subject(newSubjectName, teacher, HL, level);
             subjects.add(newSubject);
             System.out.println("Added subject " + newSubjectName);
             return newSubject;
-
         } else {
             System.out.println("Tried to add " + newSubjectName + " but there is no space, must delete one first");
-
         }
         return null;
     }
@@ -80,17 +77,14 @@ public class Student implements Serializable {
     }
 
     //allow an existing Subject instance to be added
-     public Subject addSubject(Subject newSubject) {
+    public Subject addSubject(Subject newSubject) {
         subjects.add(newSubject);
         return newSubject;
-    }   
-    
+    }
+
     public void printsubjects() {
-
         for (int i = 0; i < subjects.size(); i++) {
-
             System.out.println(subjects.get(i).toString());
-
         }
     }
 

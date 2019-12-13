@@ -6,11 +6,30 @@ import java.util.Date;
 public class Assessment implements Serializable {
 
 //This is the state of the class, ie its variales
-    Date date;
-    String reflection;
-    String name;
-    int level;
+//note that all variables are private and get/set methods are provided
+//this is encapsulation
+    
+    private Date date;
+    private String reflection;
+    private String name;
+    private int level;
+    int score;
+    int outOf;
+    int weight;
+    String type;
 
+    //These are the constructors (note they have no return type and are the same name as the class)       
+    public Assessment() {
+    }
+
+    public Assessment(Date date, String name) {
+        this.date = date;
+        this.name = name;
+    }
+    
+    //What follows is all the behavior of the class (ie. action/methods/functions)
+    
+    //Accessor (get) and mutator (set) methods 
     public int getLevel() {
         return level;
     }
@@ -18,10 +37,7 @@ public class Assessment implements Serializable {
     public void setLevel(int Level) {
         this.level = Level;
     }
-    int score;
-    int outOf;
-    int weight;
-    String type;
+
 
     public String getType() {
         return type;
@@ -31,17 +47,6 @@ public class Assessment implements Serializable {
         this.type = type;
     }
 
-    //These are the constructors (note they have no return type and are the same name as the class)       
-    public Assessment() {
-    }
-
-    public Assessment(Date date, String name) {
-        super();
-        this.date = date;
-        this.name = name;
-    }
-
-//This is the behaviour, ie the methods/functions of the class
     public Date getDate() {
         return date;
     }
@@ -90,7 +95,8 @@ public class Assessment implements Serializable {
         this.weight = weight;
     }
 
+    //This method is useful for debugging as it just prints out the fields nicely
     public String toString() {
-        return "name: " + name + " date:" + date + " Type: "+type+" Score:" + score + " Out of:" + outOf + " Weight:" + weight + " Level:"+level+" Reflection" + (reflection != null ? "Yes" : "No");
+        return "Assessment name: " + name + " date:" + date + " Type: "+type+" Score:" + score + " Out of:" + outOf + " Weight:" + weight + " Level:"+level+" Reflection:" + (reflection != null ? "Yes" : "No");
     }
 }

@@ -94,13 +94,13 @@ public class Global {
          me.printsubjects();
 
         //how many subjects do I currently have?
-        Global.debug("I'm studying " + me.subjects.size() + " subjects");
+        Global.debug("I'm studying " + me.getSubjects().size() + " subjects");
 
         //removing a subject
         me.removeSubject("DT");
 
         //how many subjects do I have now?
-        Global.debug("I'm now studying " + me.subjects.size() + " subjects");
+        Global.debug("I'm now studying " + me.getSubjects().size() + " subjects");
 
         //check DT has gone now
         Global.debug("DT SHOULD BE GONE NOW");
@@ -108,9 +108,9 @@ public class Global {
 
         //changing subject details
         Subject cs = me.getSubject("Comp Sci");
-        cs.teacher = "Ken";
-        cs.HLorNot = true;
-        cs.currentLevel = 5;
+        cs.setTeacher("Ken");
+        cs.setHLorNot(true);
+        cs.setCurrentLevel(5);
 
         //Handling Assessments
         //Adding an IA

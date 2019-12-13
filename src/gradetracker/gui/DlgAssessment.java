@@ -23,44 +23,52 @@ import javax.swing.JOptionPane;
  */
 public class DlgAssessment extends javax.swing.JDialog {
 
-    Assessment assessment;
-    Subject subject;
+    //State (variables) of the class
+    Assessment assessment;  //holds a reference to the assessment being edited
+    //of null if a new one is being assed
+    Subject subject;        //holds a reference to the subject this assessment
+    //belings to
 
-    /**
-     * Creates new form DlgAssessment
-     */
+    //The following code is the behaviour of the class
     public DlgAssessment(java.awt.Frame parent, boolean modal, Subject subject, Assessment selectedAssessment) {
+        //centre the form on screen and set up close operation etc
         super(parent, modal);
-        this.assessment = selectedAssessment;
-        this.subject = subject;
-
         initComponents();
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        if (selectedAssessment != null) {
+        //remember the assessment and subject that are passed in (put them in the state variables above)
+        this.assessment = selectedAssessment;
+        this.subject = subject;
+        //fill in the data from the assessment onto the form to edit
+        refreshDataOnForm();
+    }
+
+    private void refreshDataOnForm() {
+        if (assessment != null) {
             //then we are editing
-            
             this.lblMode.setText("Editing");
             this.txtTopic.setText(assessment.getName());
             this.txtReflection.setText(assessment.getReflection());
             this.txtOutOf.setText("" + assessment.getOutOf());
             this.txtScore.setText("" + assessment.getScore());
             this.txtWeight.setText("" + assessment.getWeight());
-            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
-            if (assessment.getDate()!=null){
-            this.txtDate.setText(dateFormat.format(assessment.getDate()));
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            if (assessment.getDate() != null) {
+                this.txtDate.setText(dateFormat.format(assessment.getDate()));
             }
             //this.cmbType.setSelectedValue(assessment.getType());
             setAssessmentTypeByValue(assessment.getType());
-            cmbLevel.setSelectedIndex(assessment.getLevel()-1);
-
+            cmbLevel.setSelectedIndex(assessment.getLevel() - 1);
         } else {
             //Inserting new Assessment
             lblMode.setText("Adding");
         }
     }
 
+    //This method is used to simply set the combo box (assessment type)
+    //so that it is selecting the correct assessment type when editing 
+    //an existing assessment        
     private void setAssessmentTypeByValue(String type) {
         ComboBoxModel model = this.cmbType.getModel();
         for (int i = 0; i < model.getSize(); i++) {
@@ -183,59 +191,46 @@ public class DlgAssessment extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
+        //Close the form without saving if the user presses cancel
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-     if (assessment==null){
+        // If the user presses save, then either:
+        // a new assessment is added (if inserting)
+        // or the changes are saved (if editing)
+
+        boolean inserting = false;
+        if (assessment == null) {
             //inserting new assessment
-            
-            Assessment newAssessment=new Assessment();
-       
-         try {  
-             Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(txtDate.getText());
-             newAssessment.setDate(date1);
-         } catch (ParseException ex) {
-             JOptionPane.showMessageDialog(null, "Invalid date format, please correct it before saving", "Save Assessment", JOptionPane.ERROR_MESSAGE);
-             return; // drop out of save
-         }
-            
-            newAssessment.setReflection(txtReflection.getText());
-            newAssessment.setName(txtTopic.getText());
-            newAssessment.setOutOf(Integer.parseInt(txtOutOf.getText()));
-            newAssessment.setScore(Integer.parseInt(txtScore.getText()));
-            newAssessment.setWeight(Integer.parseInt(txtWeight.getText()));
-            newAssessment.setType(cmbType.getSelectedItem().toString());
-            newAssessment.setLevel(cmbLevel.getSelectedIndex()+1);
-            subject.addAssessment(newAssessment);
-            System.out.println("Saving new Assessment:"+newAssessment.toString());
-        } else {
-           //Editing existing assessment
-         try {  
-             Date assessmentDate=new SimpleDateFormat("dd/MM/yyyy").parse(txtDate.getText());
-             assessment.setDate(assessmentDate);
-         } catch (ParseException ex) {
-             JOptionPane.showMessageDialog(null, "Invalid date format, please correct it before saving", "Save Assessment", JOptionPane.ERROR_MESSAGE);
-             return; // drop out of save
-         }
-            
-            assessment.setReflection(txtReflection.getText());
-            assessment.setName(txtTopic.getText());
-            assessment.setOutOf(Integer.parseInt(txtOutOf.getText()));
-            assessment.setScore(Integer.parseInt(txtScore.getText()));
-            assessment.setWeight(Integer.parseInt(txtWeight.getText()));
-            assessment.setType(cmbType.getSelectedItem().toString());
-            assessment.setLevel(cmbLevel.getSelectedIndex()+1);
-            System.out.println("Editing new Assessment:"+assessment.toString());
-
-
+           assessment = new Assessment();
+            inserting = true;
         }
+        //is the date typed in the correct format?
+        try {
+            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(txtDate.getText());
+            assessment.setDate(date1);
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(null, "Invalid date format, please correct it before saving", "Save Assessment", JOptionPane.ERROR_MESSAGE);
+            return; // drop out of save
+        }
+        //add the screen fields into the data model
+        assessment.setReflection(txtReflection.getText());
+        assessment.setName(txtTopic.getText());
+        assessment.setOutOf(Integer.parseInt(txtOutOf.getText()));
+        assessment.setScore(Integer.parseInt(txtScore.getText()));
+        assessment.setWeight(Integer.parseInt(txtWeight.getText()));
+        assessment.setType(cmbType.getSelectedItem().toString());
+        assessment.setLevel(cmbLevel.getSelectedIndex() + 1);
+        //if inserting rather than editing, add that assessment to the subject
+        if (inserting) {
+            subject.addAssessment(assessment);
+        }
+
         Global.saveToFile();
-        JOptionPane.showMessageDialog(null, "Your assessment has been saved", "Save Assessment", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Your changes have been saved", "Save Assessment", JOptionPane.INFORMATION_MESSAGE);
         this.dispose();
-         
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
@@ -268,7 +263,7 @@ public class DlgAssessment extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DlgAssessment dialog = new DlgAssessment(new javax.swing.JFrame(), true,null, null);
+                DlgAssessment dialog = new DlgAssessment(new javax.swing.JFrame(), true, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

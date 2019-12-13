@@ -6,13 +6,16 @@ import java.util.Date;
 
 public class Subject implements Serializable {
 
-    public String name;
-    public String teacher;
-    public boolean HLorNot;
-    public int currentLevel;
+    //This is the state (aka. variables/fields/attributes)
+    private String name;
+    private String teacher;
+    private boolean HLorNot;
+    private int currentLevel;
+    private ArrayList<Assessment> assessments;
 
-    public ArrayList<Assessment> assessments;
-
+    //Constructors
+    public Subject(){}
+    
     public Subject(String name, String teacher, boolean hl, int level) {
         this.name = name;
         this.teacher = teacher;
@@ -21,6 +24,11 @@ public class Subject implements Serializable {
         this.assessments = new ArrayList<Assessment>();
     }
 
+    //Now comes the bahvior (aka. methods/actions/functions/operations)
+    public void setAssessments(ArrayList<Assessment> assessments) {
+        this.assessments = assessments;
+    }
+    
        public void addAssessment(Assessment a) {
         assessments.add(a);
     }
@@ -30,19 +38,14 @@ public class Subject implements Serializable {
     }
 
     public Assessment getAssessment(Date aDate) {
-
         for (Assessment i : assessments) {
-
-            if (i.date.compareTo(aDate) == 0) {
+            if (i.getDate().compareTo(aDate) == 0) {
                 return i;
-
             }
-
         }
         return null;
     }
-    
-    
+ 
     public String getName() {
         return name;
     }
@@ -59,7 +62,7 @@ public class Subject implements Serializable {
         this.teacher = teacher;
     }
 
-    public boolean isHLorNot() {
+    public boolean getHLorNot() {
         return HLorNot;
     }
 
@@ -79,9 +82,6 @@ public class Subject implements Serializable {
         return assessments;
     }
 
-
- 
-
     public void countAssessments() {
         System.out.println(assessments.size());
     }
@@ -91,10 +91,10 @@ public class Subject implements Serializable {
             System.out.println(i.toString());
         }
     }
-
-    public String toString(){
-           
-        return "name: " + name + " Teacher:" + teacher + " HL:" + HLorNot + " Current Level:" + currentLevel;
+    
+    // this is useful for debugging
+    public String toString(){         
+        return "Subject name: " + name + " Teacher:" + teacher + " HL:" + HLorNot + " Current Level:" + currentLevel;
     }
     
 }

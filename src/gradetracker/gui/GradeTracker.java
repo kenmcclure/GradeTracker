@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import gradetracker.logic.*;
 import java.awt.Dialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,17 +19,10 @@ import javax.swing.JFrame;
  */
 public class GradeTracker extends javax.swing.JFrame {
 
-    //List subjectsTOBIND=Global.me.getSubject("Comp Sci").assessments;
-    /**
-     * Creates new form GradeTracker
-     */
-
-
-    
-
+//Constructors
     public GradeTracker() {
+        //Centre window and set up default close operation
         initComponents();
-
         setLocationRelativeTo(null);  //this will move my form to the middle
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -36,8 +30,6 @@ public class GradeTracker extends javax.swing.JFrame {
         Global.loadFromFile();
         updateListOfSubjects();
 
-        //disable delete button as no subject is selected
-        btnDeleteSubject.setEnabled(false);
 
     }
 
@@ -54,11 +46,14 @@ public class GradeTracker extends javax.swing.JFrame {
         subjectTableData.setRowCount(0);
 
         //go through my subjects and add them to the table
-        for (int i = 0; i < Global.me.subjects.size(); i++) {
+        for (int i = 0; i < Global.me.getSubjects().size(); i++) {
 
             //for a table you have to add each row as an array of Objects,
             //ie each column is an object
-            subjectTableData.addRow(new Object[]{Global.me.subjects.get(i).name,Global.me.subjects.get(i).teacher,Global.me.subjects.get(i).currentLevel});
+            subjectTableData.addRow(new Object[]{
+                Global.me.getSubjects().get(i).getName(),
+                Global.me.getSubjects().get(i).getTeacher(),
+                Global.me.getSubjects().get(i).getCurrentLevel()});
 
         }
     }
@@ -143,15 +138,13 @@ public class GradeTracker extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSubjectActionPerformed
-        // TODO add your handling code here:
-        DlgSubject DS = new DlgSubject(this,true,null);
+        // If the user wants to add a subject
+        //then call the subject form passing in null
+        DlgSubject DS = new DlgSubject(this, true, null);
         DS.setVisible(true);
-
-        //update the screen
+        //now update the screen one the subject form is closed and control
+        //is returned back to this form. To reflect any changes
         updateListOfSubjects();
-        Global.debug("I finished adding");
-
-
     }//GEN-LAST:event_btnAddSubjectActionPerformed
 
     private void btnDeleteSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSubjectActionPerformed
@@ -172,19 +165,24 @@ public class GradeTracker extends javax.swing.JFrame {
 
             //now remove it from table that's displayed on the screen
             subjectTableData.removeRow(row);
-
+        } else {
+            //Adding new one
+            //Message saying you need to select one first 
+            JOptionPane.showMessageDialog(null, "Please select a subject to delete", "Delete Subject", JOptionPane.INFORMATION_MESSAGE);
         }
         //
 
     }//GEN-LAST:event_btnDeleteSubjectActionPerformed
 
     private void tblSubjectsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSubjectsMouseClicked
-        // TODO add your handling code here:
+        // If someone clicks on the table with a double click
+        //then open the subject form and pass in a reference to the subject
+        //they clicked on for editing
 
         if (evt.getClickCount() == 2) {
             //the user double clicked
-            Subject selectedSubject=Global.me.subjects.get(tblSubjects.getSelectedRow());
-            DlgSubject DS = new DlgSubject(this,true,selectedSubject);
+            Subject selectedSubject = Global.me.getSubjects().get(tblSubjects.getSelectedRow());
+            DlgSubject DS = new DlgSubject(this, true, selectedSubject);
             DS.setVisible(true);
             this.updateListOfSubjects();
         } else {
@@ -195,14 +193,20 @@ public class GradeTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_tblSubjectsMouseClicked
 
     private void btnEditSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSubjectActionPerformed
-        // TODO add your handling code here:
-        //SubjectForm sf = new SubjectForm();
-        //sf.setVisible(true);
-        //EditSubject
-        Subject selectedSubject=Global.me.subjects.get(tblSubjects.getSelectedRow());
-        DlgSubject es = new DlgSubject(this,true,selectedSubject);
-        es.setVisible(true);
-        this.updateListOfSubjects();
+        //Open the subject form passing in the subject to be edited
+        if (tblSubjects.getSelectedRow() > -1) {
+            //only allow editing if they have selected a subject)
+            Subject selectedSubject = Global.me.getSubjects().get(tblSubjects.getSelectedRow());
+            DlgSubject subjectForm = new DlgSubject(this, true, selectedSubject);
+            subjectForm.setVisible(true);
+            //Nowupdate the data on this form one the subject form has been closed
+            //and the program returns here
+            this.updateListOfSubjects();
+        } else {
+            //Adding new one
+            //Message saying you need to select one first 
+            JOptionPane.showMessageDialog(null, "Please select a subject to edit", "Edit Subject", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnEditSubjectActionPerformed
 
     /**
